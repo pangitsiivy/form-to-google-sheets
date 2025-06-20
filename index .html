@@ -18,29 +18,36 @@
   <p id="msg"></p>
 
 <script>
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbysaXQoCzGCEHSLq-vkoOAfPvIrIp95NTh72O2JnbRQcKS8TAZe8kgdVjpfwlOvapnYkw/exec';
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbxhpucMyfOZ2WOdMjmjdcZ_qUFvO_MONCcXj4t0pwdfd2Ek8r12aC8dhJdSifH0pFANBQ/exec';
   const form = document.forms['submit-to-google-sheet'];
   const msg = document.getElementById('msg');
 
-  form.addEventListener('submit', e => {
+    form.addEventListener('submit', e => {
     e.preventDefault();
-    fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-      .then(response => {
+
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value, key) => (data[key] = value));
+
+    fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' },
+    })
+        .then(response => {
         if (response.ok) {
-          msg.innerHTML = "✅ Form submitted successfully!";
-          form.reset();
+            msg.innerHTML = "✅ Form submitted successfully!";
+            form.reset();
         } else {
-          return response.text().then(text => {
+            return response.text().then(text => {
             msg.innerHTML = "⚠️ Server error: " + text;
-            console.error("Server said:", text);
-          });
+            });
         }
-      })
-      .catch(error => {
-        msg.innerHTML = "❌ Network error submitting form.";
-        console.error("Network error:", error.message);
-      });
-  });
+        })
+        .catch(error => {
+        msg.innerHTML = "❌ Network error: " + error.message;
+        });
+    });
 </script>
 
 </body>
