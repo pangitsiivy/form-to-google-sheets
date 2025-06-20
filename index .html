@@ -29,10 +29,10 @@
           msg.innerHTML = "Form submitted successfully!";
           form.reset();
         })
-        .catch(error => {
-          msg.innerHTML = "Error submitting form";
-          console.error("Error:", error.message);
-        });
+      .catch(error => {
+        msg.innerHTML = "Error: " + error.message;
+        console.error("Detailed Error:", error);
+      });
     });
   </script>
 </body>
